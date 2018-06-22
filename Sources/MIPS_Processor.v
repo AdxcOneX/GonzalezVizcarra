@@ -55,6 +55,7 @@ wire ORForBranch;
 wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
+
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
@@ -195,7 +196,8 @@ ArithmeticLogicUnit
 	.A(ReadData1_wire),
 	.B(ReadData2OrInmmediate_wire),
 	.Zero(Zero_wire),
-	.ALUResult(ALUResult_wire)
+	.ALUResult(ALUResult_wire),
+	.shamt(Instruction_wire[10:6])
 );
 
 assign ALUResultOut = ALUResult_wire;
