@@ -13,7 +13,7 @@
 module DataMemory 
 #(	
 	//Entrada y salida de memoria, deberia de ser de 32 bits, no 8
-	parameter DATA_WIDTH=8,
+	parameter DATA_WIDTH=32,
 	//Podemos almacenar a 2^32
 	//Modificar la memoria
 	parameter MEMORY_DEPTH = 1024

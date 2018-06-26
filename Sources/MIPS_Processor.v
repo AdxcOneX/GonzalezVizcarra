@@ -48,13 +48,19 @@ assign  PortOut = 0;
 // Data types to connect modules
 wire BranchNE_wire;
 wire BranchEQ_wire;
+//
 wire RegDst_wire;
+//
 wire NotZeroANDBrachNE;
 wire ZeroANDBrachEQ;
+//
 wire ORForBranch;
 wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
+wire PCSrc;
+
+wire 
 
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
@@ -70,8 +76,9 @@ wire [31:0] ALUResult_wire;
 wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
-integer ALUStatus;
 
+wire [31:0] Shift_wire;//
+integer ALUStatus;
 
 //******************************************************************/
 //******************************************************************/
@@ -112,17 +119,58 @@ Adder32bits
 PC_Puls_4
 (
 	.Data0(PC_wire),
-	.Data1(4),
+	.Data1(4)	,
 	
 	.Result(PC_4_wire)
 );
+Adder32bits
+Adder_Branch
+(
+	.Data0(PC_4_wire),
+	.Data1(InmmediateExtendAnded_wire),
+	.Result(PCtoBranch_wire)//Todos los cables ya estaban instanciados
+);
+//Instranciar sumador con mux respectivo de PCSrc
+AndGate
+AndBEQ
+(
+	.A(Zero_wire),
+	.B(BranchEQ_wire),
+	.C(ZeroANDBrachEQ)
+);
+AndGate
+AndBNE
+(
+	.A(~Zero_wire), //Negar zero wire?
+	.B(BranchNE_wire),
+	.C(NotZeroANDBrachNE)
+)
+ORGate
+OrBranch
+(
+	.A(ZeroANDBrachEQ),
+	.B(NotZeroANDBrachNE),
+	.C(PCSrc)
+)
+//******************************************************************/
+//******************************************************************/
+//******************************************************************/
+//******************************************************************/
+//******************************************************************/
+//JAndBranch
 
-
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MultiplexerBranch
+(
+	.Selector(PCSrc),
+	.MUX_Data0(PC_4_wire),
+	.MUX_Data1(PCtoBranch_wire),
+	
+	.MUX_Output()
+);
 Multiplexer2to1
 #(
 	.NBits(5)
@@ -160,8 +208,12 @@ SignExtendForConstants
 	.DataInput(Instruction_wire[15:0]),
    .SignExtendOutput(InmmediateExtend_wire)
 );
-
-
+//instanciar SL2?
+ShiftLeft2
+(
+	.DataInput(InmmediateExtend_wire),
+	.DataOutput(Shift_wire)
+);
 
 Multiplexer2to1
 #(

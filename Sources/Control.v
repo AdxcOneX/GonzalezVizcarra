@@ -30,16 +30,23 @@ localparam R_Type = 0;
 localparam I_Type_ADDI= 6'h8;
 localparam I_Type_ORI = 6'h0d;
 localparam I_Type_LUI = 6'h0f;
+localparam I_Type_LW  = 6'h23;
+localparam I_Type_SW	 = 6'h2b;
+localparam I_Type_BNE = 6'h5;
+localparam I_Type_BEQ = 6'h4;
 
-reg [10:0] ControlValues;
+
+reg [11:0] ControlValues;
 
 always@(OP) begin
 	casex(OP)
 		// RegDst//ALUSrc//MemtoReg//RegWrite//MemRead//MemWrite//Branches//ALUOp(Relacionado a ALUCtrl)
-		R_Type:       ControlValues= 11'b1_0_0_1_00_00_111;
-		I_Type_ADDI:  ControlValues= 11'b0_1_0_1_00_00_100;
-		I_Type_ORI:	  ControlValues= 11'b0_1_0_1_00_00_101;
-		I_Type_LUI:	  ControlValues= 11'b0_1_0_1_00_00_110;
+		R_Type:       ControlValues= 12'b1_0_0_1_00_00_111;
+		I_Type_ADDI:  ControlValues= 12'b0_1_0_1_00_00_0100;
+		I_Type_ORI:	  ControlValues= 12'b0_1_0_1_00_00_0101;
+		I_Type_LUI:	  ControlValues= 12'b0_1_0_1_00_00_0110;
+		I_Type_LW:	  ControlValues= 12'b0_1_1_1_10_00_0001;
+		I_Type_SW:	  ControlValues= 12'bx_1_x_0_01_00_0010;
 		
 		default:
 			ControlValues= 10'b0000000000;	

@@ -60,6 +60,7 @@ always@(Selector)begin
 		//ISA a implementar
 		I_Type_LW:		ALUControlValues = 4'b1101;
 		I_Type_SW:		ALUControlValues = 4'b1110;
+		BNE_&_BEQ:		ALUControlValues = 4'b1111;
 		
 		default: ALUControlValues = 4'b1001;
 	endcase
