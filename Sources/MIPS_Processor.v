@@ -60,8 +60,6 @@ wire RegWrite_wire;
 wire Zero_wire;
 wire PCSrc;
 
-wire 
-
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
@@ -76,6 +74,7 @@ wire [31:0] ALUResult_wire;
 wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
+wire [31:0] BranchToPC_wire;
 
 wire [31:0] Shift_wire;//
 integer ALUStatus;
@@ -102,7 +101,7 @@ ProgramCounter
 (
 	.clk(clk),
 	.reset(reset),
-	.NewPC(PC_4_wire),
+	.NewPC(MUX_PC_wire),
 	.PCValue(PC_wire)
 );
 ProgramMemory
@@ -127,31 +126,31 @@ Adder32bits
 Adder_Branch
 (
 	.Data0(PC_4_wire),
-	.Data1(InmmediateExtendAnded_wire),
+	.Data1(Shift_wire),
 	.Result(PCtoBranch_wire)//Todos los cables ya estaban instanciados
 );
 //Instranciar sumador con mux respectivo de PCSrc
-AndGate
+ANDGate
 AndBEQ
 (
 	.A(Zero_wire),
 	.B(BranchEQ_wire),
 	.C(ZeroANDBrachEQ)
 );
-AndGate
+ANDGate
 AndBNE
 (
 	.A(~Zero_wire), //Negar zero wire?
 	.B(BranchNE_wire),
 	.C(NotZeroANDBrachNE)
-)
+);
 ORGate
 OrBranch
 (
 	.A(ZeroANDBrachEQ),
 	.B(NotZeroANDBrachNE),
 	.C(PCSrc)
-)
+);
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
@@ -169,7 +168,7 @@ MultiplexerBranch
 	.MUX_Data0(PC_4_wire),
 	.MUX_Data1(PCtoBranch_wire),
 	
-	.MUX_Output()
+	.MUX_Output(MUX_PC_wire)
 );
 Multiplexer2to1
 #(

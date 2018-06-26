@@ -36,7 +36,7 @@ localparam I_Type_LUI 	 = 10'b0110_xxxxxx;
 //Requerimos mayor cant de bits
 localparam I_Type_LW		 = 10'b0001_xxxxxx;
 localparam I_Type_SW		 = 10'b0010_xxxxxx;
-localparam I_Type_Branch = 10'b0011_xxxxxx;
+localparam BNE_BEQ	    = 10'b0011_xxxxxx;
 
 reg [3:0] ALUControlValues;
 wire [8:0] Selector;
@@ -60,7 +60,7 @@ always@(Selector)begin
 		//ISA a implementar
 		I_Type_LW:		ALUControlValues = 4'b1101;
 		I_Type_SW:		ALUControlValues = 4'b1110;
-		BNE_&_BEQ:		ALUControlValues = 4'b1111;
+		BNE_BEQ:			ALUControlValues = 4'b1111;
 		
 		default: ALUControlValues = 4'b1001;
 	endcase
