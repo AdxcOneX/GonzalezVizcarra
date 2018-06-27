@@ -60,6 +60,9 @@ wire RegWrite_wire;
 wire Zero_wire;
 wire PCSrc;
 
+wire Jump_wire;//
+wire Jr_wire;//
+
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
@@ -77,6 +80,11 @@ wire [31:0] PCtoBranch_wire;
 wire [31:0] BranchToPC_wire;
 
 wire [31:0] Shift_wire;//
+wire [31:0] Shift_Mux_wire;//
+
+wire [31:0] Jr_MUX_wire;//
+wire [31:0] Branch_Jump_MUX_wire;//
+
 integer ALUStatus;
 
 //******************************************************************/
@@ -168,6 +176,18 @@ MultiplexerBranch
 	.MUX_Data0(PC_4_wire),
 	.MUX_Data1(PCtoBranch_wire),
 	
+	.MUX_Output(Branch_Jump_MUX_wire)
+);
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MultiplexerJump
+(
+	.Selector(Jump_wire),
+	.MUX_Data0({PC_4_wire[31:28],Shift_Mux_wire[27:0]}),
+	.MUX_Data1(Branch_Jump_MUX_wire),
+	
 	.MUX_Output(MUX_PC_wire)
 );
 Multiplexer2to1
@@ -209,11 +229,18 @@ SignExtendForConstants
 );
 //instanciar SL2?
 ShiftLeft2
+Shift_Branch
 (
 	.DataInput(InmmediateExtend_wire),
 	.DataOutput(Shift_wire)
 );
-
+ShiftLeft2
+Shift_Jump
+(
+	.DataInput({Instruction_wire[25:0],6'b0}),
+	.DataOutput(Shift_Mux_wire)
+);
+//
 Multiplexer2to1
 #(
 	.NBits(32)
@@ -227,8 +254,6 @@ MUX_ForReadDataAndInmediate
 	.MUX_Output(ReadData2OrInmmediate_wire)
 
 );
-
-
 ALUControl
 ArithmeticLogicUnitControl
 (

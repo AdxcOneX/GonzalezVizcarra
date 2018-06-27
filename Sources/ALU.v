@@ -22,7 +22,7 @@ module ALU
 	input [3:0] ALUOperation,
 	input [31:0] A,
 	input [31:0] B,
-	input [3:0] shamt, // 4bits?
+	input [4:0] shamt, //
 	output reg Zero,
 	output reg [31:0]ALUResult
 );
