@@ -237,7 +237,7 @@ Shift_Branch
 ShiftLeft2
 Shift_Jump
 (
-	.DataInput({Instruction_wire[25:0],6'b0}),
+	.DataInput(Instruction_wire[25:0]),
 	.DataOutput(Shift_Mux_wire)
 );
 //
