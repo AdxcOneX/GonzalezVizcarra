@@ -27,7 +27,7 @@ module PC_Register
 
 always@(negedge reset or posedge clk) begin
 	if(reset==0)
-		PCValue <= 8'h0040000;
+		PCValue <= 32'h0040000;
 		//PCValue <= 0;
 	else	
 		PCValue<=NewPC;

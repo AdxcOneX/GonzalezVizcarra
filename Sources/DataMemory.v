@@ -16,7 +16,7 @@ module DataMemory
 	parameter DATA_WIDTH=8,
 	//Podemos almacenar a 2^32
 	//Modificar la memoria
-	parameter MEMORY_DEPTH = 1024
+	parameter MEMORY_DEPTH = 512
 
 )
 (
