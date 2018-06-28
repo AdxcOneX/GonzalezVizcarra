@@ -15,7 +15,7 @@
 module ProgramMemory
 #
 (
-	parameter MEMORY_DEPTH=32,
+	parameter MEMORY_DEPTH=128,
 	parameter DATA_WIDTH=32
 )
 (
@@ -36,7 +36,7 @@ assign RealAddress = {2'b0,Address[(DATA_WIDTH-1):2]};
 
 	always @ (RealAddress)
 	begin
-		Instruction = rom[RealAddress];
+		Instruction = rom[RealAddress-32'h100000];//
 	end
 
 endmodule

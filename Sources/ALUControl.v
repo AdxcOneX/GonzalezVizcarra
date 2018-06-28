@@ -39,7 +39,7 @@ localparam I_Type_SW		 = 10'b0010_xxxxxx;
 localparam BNE_BEQ	    = 10'b0011_xxxxxx;
 
 reg [3:0] ALUControlValues;
-wire [8:0] Selector;
+wire [9:0] Selector;//
 
 assign Selector = {ALUOp, ALUFunction};
 
