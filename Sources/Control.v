@@ -23,6 +23,9 @@ module Control
 	output ALUSrc,
 	output RegWrite,
 	
+	output J,
+	output Jr,
+	
 	output [1:0] MemtoReg,//
 	output [1:0] RegDst,//
 	output [3:0]ALUOp//
@@ -40,7 +43,7 @@ localparam I_Type_BEQ = 6'h4;
 //
 localparam J_Type_J	 = 6'h2;
 localparam J_Type_Jal = 6'h3;
-//localparam J_Type_Jr  no funciona esto
+
 localparam J_Type_Jr  = 12'b0000_1000;
 
 

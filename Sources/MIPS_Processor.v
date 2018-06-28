@@ -49,7 +49,8 @@ assign  PortOut = 0;
 wire BranchNE_wire;
 wire BranchEQ_wire;
 //
-wire RegDst_wire;
+wire [1:0] RegDst_wire;
+wire [1:0] MemtoReg_wire;
 //
 wire NotZeroANDBrachNE;
 wire ZeroANDBrachEQ;
@@ -60,16 +61,16 @@ wire RegWrite_wire;
 wire Zero_wire;
 wire PCSrc;
 
-wire Jump_wire;//
+wire J_wire;//
 wire Jr_wire;//
 
 wire MemRead_wire;//
 wire MemWrite_wire;//
 
-wire [2:0] ALUOp_wire;
+wire [3:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
-wire [31:0] MUX_PC_wire;
+
 wire [31:0] PC_wire;
 wire [31:0] Instruction_wire;
 wire [31:0] ReadData1_wire;
@@ -85,10 +86,11 @@ wire [31:0] BranchToPC_wire;
 wire [31:0] Shift_wire;//
 wire [31:0] Shift_Mux_wire;//
 
-wire [31:0] Jr_MUX_wire;//
-wire [31:0] Branch_Jump_MUX_wire;//
+wire [31:0] MUX_Branch_Jump_wire;//
 
 wire [31:0] Mux_WriteData_wire;
+wire [31:0] MUX_PC_wire;
+wire [31:0] MUX_Jr_wire;//
 
 integer ALUStatus;
 
@@ -101,12 +103,15 @@ Control
 ControlUnit
 (
 	.OP(Instruction_wire[31:26]),
+	.Funct(Instruction_wire[5:0]),
 	.RegDst(RegDst_wire),
 	.BranchNE(BranchNE_wire),
 	.BranchEQ(BranchEQ_wire),
 	.ALUOp(ALUOp_wire),
 	.ALUSrc(ALUSrc_wire),
-	.RegWrite(RegWrite_wire)
+	.RegWrite(RegWrite_wire),
+	.J(J_wire),
+	.Jr(Jr_wire)
 );
 
 PC_Register
@@ -119,7 +124,8 @@ ProgramCounter
 );
 ProgramMemory
 #(
-	.MEMORY_DEPTH(MEMORY_DEPTH)
+	.MEMORY_DEPTH(MEMORY_DEPTH),//revisar
+	.DATA_WIDTH(32)
 )
 ROMProgramMemory
 (
@@ -181,7 +187,7 @@ MultiplexerBranch
 	.MUX_Data0(PC_4_wire),
 	.MUX_Data1(PCtoBranch_wire),
 	
-	.MUX_Output(Branch_Jump_MUX_wire)
+	.MUX_Output(MUX_Branch_Jump_wire)
 );
 Multiplexer2to1
 #(
@@ -189,9 +195,21 @@ Multiplexer2to1
 )
 MultiplexerJump
 (
-	.Selector(Jump_wire),
+	.Selector(J_wire),
 	.MUX_Data0({PC_4_wire[31:28],Shift_Mux_wire[27:0]}),
 	.MUX_Data1(Branch_Jump_MUX_wire),
+	
+	.MUX_Output(MUX_Jr_wire)
+);
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+Multiplexer_Jr
+(
+	.Selector(Jr_wire),
+	.MUX_Data0(MUX_Jr_wire),
+	.MUX_Data1(ReadData1_wire),
 	
 	.MUX_Output(MUX_PC_wire)
 );
@@ -242,7 +260,7 @@ Shift_Branch
 ShiftLeft2
 Shift_Jump
 (
-	.DataInput(Instruction_wire[25:0]),
+	.DataInput({6'b0,Instruction_wire[25:0]}),
 	.DataOutput(Shift_Mux_wire)
 );
 //
@@ -292,7 +310,7 @@ Data_Memory
 (
 	.clk(clk),
 	.WriteData(ReadData2_wire),
-	.Address(ALUResult_wire[31:0]),
+	.Address({20'b0,ALUResult_wire[11:0]>>2}),//{20'b0,ALUResult_wire[11:0]>>2}
 	.MemWrite(MemWrite_wire),
 	.MemRead(MemRead_wire),
 	.ReadData(ReadData_Mux_wire)
