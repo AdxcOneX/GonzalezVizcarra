@@ -16,11 +16,9 @@ module Control
 	input [5:0]OP,
 	input [5:0]Funct,//
 	
-	output RegDst,
 	output BranchEQ,
 	output BranchNE,
 	output MemRead,
-	output MemtoReg,
 	output MemWrite,
 	output ALUSrc,
 	output RegWrite,
@@ -33,6 +31,7 @@ module Control
 localparam R_Type = 0;
 localparam I_Type_ADDI= 6'h8;
 localparam I_Type_ORI = 6'h0d;
+localparam I_Type_ANDI= 6'hc;
 localparam I_Type_LUI = 6'h0f;
 localparam I_Type_LW  = 6'h23;
 localparam I_Type_SW	 = 6'h2b;
@@ -41,10 +40,12 @@ localparam I_Type_BEQ = 6'h4;
 //
 localparam J_Type_J	 = 6'h2;
 localparam J_Type_Jal = 6'h3;
-//localparam J_Type_Jr
+//localparam J_Type_Jr  no funciona esto
+localparam J_Type_Jr  = 12'b0000_1000;
 
 
 reg [14:0] ControlValues;
+reg JR; //si funciona ya que se implementaba erroneamente
 
 always@(OP) begin
 	casex(OP)
@@ -61,14 +62,14 @@ always@(OP) begin
 		J_Type_J:	  ControlValues= 15'b1_xx_x_xx_0_0_0_00_0001;
 		J_Type_Jal:	  ControlValues= 15'b1_10_0_10_1_0_0_00_0001;
 		
-		defaut:
-			ControlValues= 15'b000000000000000;	
+		default:
+						  ControlValues= 15'b0_00_0_00_0_0_0_00_0000;	
 		endcase
 end	
 
 always@(OP,Funct)
 begin
-	if({OP,Funct} = Jr)
+	if({OP,Funct} == Jr)
 		JR = 1;
 	else
 		JR = 0;
