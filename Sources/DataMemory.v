@@ -23,7 +23,7 @@ module DataMemory
 );
 	//Esto se implemento en top level sin embargo no funcionaba
 	wire[(DATA_WIDTH-1):0] Aux_Address;
-	assign Aux_Address = (Address[(DATA_WIDTH-1):0] - 32'h10010000) >> 2;
+	assign Aux_Address = (Address[(DATA_WIDTH-1):0] - 32'h1001_0000) >> 2;
 	// Declare the RAM variable
 	reg [DATA_WIDTH-1:0] ram[MEMORY_DEPTH-1:0];
 	wire [DATA_WIDTH-1:0] ReadDataAux;
