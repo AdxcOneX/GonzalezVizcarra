@@ -14,41 +14,34 @@
 ******************************************************************/
 module ALUControl
 (
-	input [2:0] ALUOp,//
+	input [3:0] ALUOp,
 	input [5:0] ALUFunction,
-	output [3:0] ALUOperation,
-	//esto faltaba para funcionar
-	output JR_aux
+	output [3:0] ALUOperation
 
 );
-
 //Primeros 3 bits los define el usuario
 //Restantes serian el opcode o funct
 //R type
-localparam R_Type_AND    = 9'b111_100100;
-localparam R_Type_OR     = 9'b111_100101;
-localparam R_Type_NOR    = 9'b111_100111;
-localparam R_Type_ADD    = 9'b111_100000;
-localparam R_Type_SUB 	 = 9'b111_100010;
-localparam R_Type_SLL 	 = 9'b111_000000;
-localparam R_Type_SRL 	 = 9'b111_000010;
-//
-localparam R_Type_JR		 = 9'b111_001000;
+localparam R_Type_AND    = 10'b1111_100100;
+localparam R_Type_OR     = 10'b1111_100101;
+localparam R_Type_NOR    = 10'b1111_100111;
+localparam R_Type_ADD    = 10'b1111_100000;
+localparam R_Type_SUB 	 = 10'b1111_100010;
+localparam R_Type_SLL 	 = 10'b1111_000000;
+localparam R_Type_SRL 	 = 10'b1111_000010;
 //I Type
-localparam I_Type_ADDI   = 9'b100_xxxxxx;
-localparam I_Type_ORI    = 9'b101_xxxxxx;
-localparam I_Type_LUI 	 = 9'b110_xxxxxx;
-localparam I_Type_ANDI   = 9'b111_xxxxxx;
-//
-localparam I_Type_LW_SW	 = 9'b001_xxxxxx; //
-//
-localparam I_Type_Branch = 9'b010_xxxxxx;
+localparam I_Type_ADDI   = 10'b0100_xxxxxx;
+localparam I_Type_ORI    = 10'b0101_xxxxxx;
+localparam I_Type_LUI 	 = 10'b0110_xxxxxx;
+//Requerimos mayor cant de bits
+localparam I_Type_LW		 = 10'b0001_xxxxxx;
+localparam I_Type_SW		 = 10'b0010_xxxxxx;
+localparam BNE_BEQ	    = 10'b0011_xxxxxx;
 
 reg [3:0] ALUControlValues;
-wire [8:0] Selector;//
+wire [9:0] Selector;//
 
 assign Selector = {ALUOp, ALUFunction};
-
 
 always@(Selector)begin
 	casex(Selector)
@@ -61,15 +54,13 @@ always@(Selector)begin
 		R_Type_SLL: 	ALUControlValues = 4'b0101;
 		R_Type_SRL:	 	ALUControlValues = 4'b0110;
 		//I_Type
-		I_Type_ADDI:	ALUControlValues = 4'b0111;
-		I_Type_ORI:		ALUControlValues = 4'b1010;
-		I_Type_LUI:		ALUControlValues = 4'b1011;
-		I_Type_ANDI:	ALUControlValues = 4'b1100;
-		//LW_SW
-		I_Type_LW_SW:	ALUControlValues = 4'b1101;
-		//
-		I_Type_Branch: ALUControlValues = 4'b1110;
-
+		I_Type_ADDI:	ALUControlValues = 4'b1110;
+		I_Type_ORI:		ALUControlValues = 4'b1101;
+		I_Type_LUI:		ALUControlValues = 4'b1100;
+		//ISA a implementar
+		I_Type_LW:		ALUControlValues = 4'b1101;
+		I_Type_SW:		ALUControlValues = 4'b1110;
+		BNE_BEQ:			ALUControlValues = 4'b1111;
 		
 		default: ALUControlValues = 4'b1001;
 	endcase
@@ -77,6 +68,5 @@ end
 
 
 assign ALUOperation = ALUControlValues;
-assign JR_aux = (Selector == R_Type_JR) ? 1'b1 : 1'b0;
 
 endmodule
