@@ -15,7 +15,7 @@
 module ProgramMemory
 #
 (
-	parameter MEMORY_DEPTH=128,
+	parameter MEMORY_DEPTH=32,
 	parameter DATA_WIDTH=32
 )
 (
@@ -24,19 +24,19 @@ module ProgramMemory
 );
 wire [(DATA_WIDTH-1):0] RealAddress;
 
-assign RealAddress = {2'b0,Address[(DATA_WIDTH-1):2]};
+assign RealAddress = {2'b0,Address[(DATA_WIDTH-24):2]}; //2'b0,Address[(DATA_WIDTH-1):2]
 
 	// Declare the ROM variable
 	reg [DATA_WIDTH-1:0] rom[MEMORY_DEPTH-1:0];
 
 	initial
 	begin
-		$readmemh("C:/MIPS_Processor/MIPS_Processor_Ver1/Sources/text.dat", rom);
+		$readmemh("C:/MIPS_Processor/MIPS_Processor_ver2/Sources/text.dat", rom);
 	end
 
 	always @ (RealAddress)
 	begin
-		Instruction = rom[RealAddress-32'h100000];//
+		Instruction = rom[RealAddress];
 	end
 
 endmodule
