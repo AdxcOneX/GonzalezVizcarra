@@ -1,4 +1,4 @@
-﻿/******************************************************************
+/******************************************************************
 * Description
 *	This is the control unit for the ALU. It receves an signal called 
 *	ALUOp from the control unit and a signal called ALUFunction from
@@ -42,7 +42,7 @@ wire [8:0] Selector;
 
 assign Selector = {ALUOp, ALUFunction};
 
-//se le agregan las instruccione con un valor que debe coincidir con los valores en la ALU
+//se le agregan las instrucciones con un valor que debe coincidir con los valores en la ALU
 always@(Selector)begin
 	casex(Selector)
 		R_Type_AND:    ALUControlValues = 4'b0000;

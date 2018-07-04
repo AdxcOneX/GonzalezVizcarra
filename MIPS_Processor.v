@@ -228,7 +228,7 @@ ID_EXE_PipeRegister
 	.enable(1),
 	//Input
 	.Pipe_Input({ID_EXE_PC_4_wire[31:0],
-					 ReadData1_wire;[31:0],
+					 ReadData1_wire[31:0],
 					 ReadData2_wire[31:0],
 					 InmmediateExtend_wire[31:0],
 					 Instruction_wire[20:16],
@@ -248,11 +248,11 @@ ID_EXE_PipeRegister
 					  ID_EXE_MemtoReg_wire,
 					  ID_EXE_BranchEQ_NE_wire,
 					  ID_EXE_MemRead_wire}) 
-);
+)
 /////////////////////////
 //Registro EXE/MEM
 /////////////////////////
-PipeLine_Regiter
+/* PipeLine_Regiter
 #(
 	.N() //
 )
@@ -269,15 +269,15 @@ EXE_MEM_PipeRegister
 					 ID_EXE_MemRead_wire,
 					 ID_EXE_RegDst_wire,
 					 ID_EXE_ALUOp_wire,
-					 ID_EXE_ALUSrc_wire,/*Aqui terminan los pipe de control*/
+					 ID_EXE_ALUSrc_wire, //Aqui terminan los pipe de control
 					 Zero_wire, 
 					 PC_Shift2_wire[31:0],
 					 ALUResult_wire[31:0],
 					 ID_EXE_ReadData2_wire[31:0],
-					 WriteRegister_wire}), /*Mux que iba para Write Reg*/
+					 WriteRegister_wire}) //Mux que iba para Write Reg
 	//Output
 	.Pipe_Output()
-);
+); */
 
 
 ProgramMemory
