@@ -11,8 +11,8 @@
 ******************************************************************/
 
 module DataMemory 
-#(	parameter DATA_WIDTH=32,
-	parameter MEMORY_DEPTH = 512
+#(	parameter DATA_WIDTH=8,
+	parameter MEMORY_DEPTH = 1024
 
 )
 (
@@ -21,9 +21,7 @@ module DataMemory
 	input MemWrite,MemRead, clk,
 	output  [DATA_WIDTH-1:0]  ReadData
 );
-	//Esto se implemento en top level sin embargo no funcionaba
-	wire[(DATA_WIDTH-1):0] Aux_Address;
-	assign Aux_Address = (Address[(DATA_WIDTH-1):0] - 32'h1001_0000) >> 2;
+	
 	// Declare the RAM variable
 	reg [DATA_WIDTH-1:0] ram[MEMORY_DEPTH-1:0];
 	wire [DATA_WIDTH-1:0] ReadDataAux;
@@ -32,9 +30,9 @@ module DataMemory
 	begin
 		// Write
 		if (MemWrite)
-			ram[Aux_Address] <= WriteData;
+			ram[Address] <= WriteData;
 	end
-	assign ReadDataAux = ram[Aux_Address];
+	assign ReadDataAux = ram[Address];
   	assign ReadData = {DATA_WIDTH{MemRead}}& ReadDataAux;
 
 endmodule
