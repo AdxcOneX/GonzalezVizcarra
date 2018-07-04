@@ -26,7 +26,7 @@ module PipeLine_Register
 	output reg [N-1:0] Pipe_Output
 );
 
-always@(negedge reset or posedge clk) begin
+always@(negedge reset or negedge clk) begin
 	if(reset==0)
 		Pipe_Output <= 'h400000; //empezaremos en la memoria de la ROM 400000
 	else	
