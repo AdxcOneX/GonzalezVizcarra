@@ -114,24 +114,38 @@ wire [31:0] ID_EXE_ReadData2_wire;
 wire [31:0] ID_EXE_InmmediateExtend_wire;
 	/////////////////////////
 	//Control
-	wire ID_EX_RegWrite_wire;
-	wire ID_EX_MemWrite_wire;
-	wire ID_EX_MemtoReg_wire;
-	wire ID_EX_BranchEQ_NE_wire;
-	wire ID_EX_RegDst_wire;
-	wire ID_EX_ALUOp_wire;
-	wire ID_EX_ALUSrc_wire;
-	wire ID_EX_MemRead_wire;
+	wire ID_EXE_RegWrite_wire;
+	wire ID_EXE_MemWrite_wire;
+	wire ID_EXE_MemtoReg_wire;
+	wire ID_EXE_BranchEQ_NE_wire;
+	wire ID_EXE_RegDst_wire;
+	wire ID_EXE_ALUOp_wire;
+	wire ID_EXE_ALUSrc_wire;
+	wire ID_EXE_MemRead_wire;
+///////////////////////////
+//Retro para WriteReg
+wire [4:0]  ID_EXE_Instruction_20_16_wire;		//se necesitara un mux mas adelante
+wire [4:0]  ID_EXE_Instruction_15_11_wire;
 /////////////////////////
 //Registro EXE/MEM
 /////////////////////////
 	//adder
-wire [31:0] EX_MEM_SL2_PC_4_wire;
+wire [31:0] EXE_MEM_SL2_PC_4_wire;
 	//ALU
-wire [31:0] EX_MEM_ALURes_wire;
+wire [31:0] EXE_MEM_ALURes_wire;
 wire EX_MEM_Zero_wire;
 	//RegFile
-wire [31:0] EX_MEM_ReadData2_wire;
+wire [31:0] EXE_MEM_ReadData2_wire;
+	/////////////////////////
+	//Control
+	wire EXE_MEM_RegWrite_wire;
+	wire EXE_MEM_MemtoReg_wire;
+	wire EXE_MEM_MemWrite_wire;
+	wire EXE_MEM_BranchEQ_NE_wire;
+	wire EXE_MEM_MemRead_wire;
+///////////////////////////
+//Retro para WriteReg
+wire [4:0] EXE_MEM_WriteRegister_wire;
 /////////////////////////
 //Registro MEM/WriteBack
 /////////////////////////
@@ -139,6 +153,13 @@ wire [31:0] EX_MEM_ReadData2_wire;
 wire [31:0] MEM_WB_ALURes_wire;
 	//RAM
 wire [31:0] MEM_WB_ReadData_wire;
+	/////////////////////////
+	//Control
+	wire MEM_WB_RegWrite_wire;
+	wire MEM_WB_MemtoReg_wire;
+///////////////////////////
+//Retro para WriteReg
+wire [4:0] MEM_WB_WriteRegister_wire;
 
 //Se agregan los wires necesarios
 //******************************************************************/
@@ -146,6 +167,7 @@ wire [31:0] MEM_WB_ReadData_wire;
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
+//AGREGAR MODULO EXTRA PIPEREG PARA LAS CONEXIONES
 Control // cerebro del sistema
 ControlUnit
 (
@@ -170,8 +192,92 @@ ProgramCounter
 
 	.PCValue(PC_wire)
 );
-
-
+/////////////////////////////////////////////////////
+//SEGMENTO DE PIPELINE_REG
+//Usamos estos para la entrada y datos
+//N varia dependiendo de las entradas
+//No podemos usar los registros del PC ya que estos se habilitan en los flancos de bajada
+/////////////////////////
+//Registro IF/ID
+/////////////////////////
+PipeLine_Register
+#(
+	.N(64) //2 entradas
+)
+IF_ID_PipeRegister
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1), //dado que siempre se ejecuta usamos enable = 1
+	//Input
+	.Pipe_Input({PC_4_wire[31:0],Instruction_wire[31:0]}),
+	//Output
+	.Pipe_Output({ID_EXE_PC_4_wire[31:0],IF_ID_Inst_wire[31:0]})
+);
+/////////////////////////
+//Registro ID/EXE
+/////////////////////////
+PipeLine_Regiter
+#(
+	.N(148) //128'b (32'b) + 10'b (Inst) + 6'b (control) + 3'b (output ALUOP)
+)
+ID_EXE_PipeRegister
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1),
+	//Input
+	.Pipe_Input({ID_EXE_PC_4_wire[31:0],
+					 ReadData1_wire;[31:0],
+					 ReadData2_wire[31:0],
+					 InmmediateExtend_wire[31:0],
+					 Instruction_wire[20:16],
+					 Instruction_wire[15:11]}),
+	//Output
+	.Pipe_Output({ID_EXE_PC_4_wire[31:0],
+					  ID_EXE_ReadData1_wire[31:0],
+					  ID_EXE_ReadData2_wire[31:0],
+					  ID_EXE_InmmediateExtend_wire[31:0],
+					  ID_EXE_Instruction_20_16_wire[4:0],
+					  ID_EXE_Instruction_15_11_wire[4:0],
+					  ID_EXE_ALUSrc_wire,							/*aqui inician las señales de control*/
+					  ID_EXE_ALUOp_wire,
+					  ID_EXE_RegDst_wire,
+					  ID_EXE_RegWrite_wire,
+					  ID_EXE_MemWrite_wire,
+					  ID_EXE_MemtoReg_wire,
+					  ID_EXE_BranchEQ_NE_wire,
+					  ID_EXE_MemRead_wire}) 
+);
+/////////////////////////
+//Registro EXE/MEM
+/////////////////////////
+PipeLine_Regiter
+#(
+	.N() //
+)
+EXE_MEM_PipeRegister
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1),
+	//Input
+	.Pipe_Input({ID_EXE_RegWrite_wire,
+					 ID_EXE_MemWrite_wire,
+					 ID_EXE_MemtoReg_wire,
+					 ID_EXE_BranchEQ_NE_wire,
+					 ID_EXE_MemRead_wire,
+					 ID_EXE_RegDst_wire,
+					 ID_EXE_ALUOp_wire,
+					 ID_EXE_ALUSrc_wire,/*Aqui terminan los pipe de control*/
+					 Zero_wire, 
+					 PC_Shift2_wire[31:0],
+					 ALUResult_wire[31:0],
+					 ID_EXE_ReadData2_wire[31:0],
+					 WriteRegister_wire}), /*Mux que iba para Write Reg*/
+	//Output
+	.Pipe_Output()
+);
 
 
 ProgramMemory
