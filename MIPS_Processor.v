@@ -217,7 +217,7 @@ IF_ID_PipeRegister
 /////////////////////////
 //Registro ID/EXE
 /////////////////////////
-PipeLine_Regiter
+PipeLine_Register
 #(
 	.N(148) //128'b (32'b) + 10'b (Inst) + 6'b (control) + 3'b (output ALUOP)
 )
@@ -248,13 +248,13 @@ ID_EXE_PipeRegister
 					  ID_EXE_MemtoReg_wire,
 					  ID_EXE_BranchEQ_NE_wire,
 					  ID_EXE_MemRead_wire}) 
-)
+);
 /////////////////////////
 //Registro EXE/MEM
 /////////////////////////
-/* PipeLine_Regiter
+PipeLine_Register
 #(
-	.N() //
+	.N(107) //8'b(control) + 1'b(zero) + 96'b(inst) + 1'b(WriteReg)
 )
 EXE_MEM_PipeRegister
 (
@@ -269,16 +269,48 @@ EXE_MEM_PipeRegister
 					 ID_EXE_MemRead_wire,
 					 ID_EXE_RegDst_wire,
 					 ID_EXE_ALUOp_wire,
-					 ID_EXE_ALUSrc_wire, //Aqui terminan los pipe de control
+					 ID_EXE_ALUSrc_wire,/*Aqui terminan los pipe de control*/
 					 Zero_wire, 
 					 PC_Shift2_wire[31:0],
 					 ALUResult_wire[31:0],
 					 ID_EXE_ReadData2_wire[31:0],
-					 WriteRegister_wire}) //Mux que iba para Write Reg
+					 WriteRegister_wire}), /*Mux que iba para Write Reg*/
 	//Output
-	.Pipe_Output()
-); */
-
+	.Pipe_Output({EXE_MEM_BranchEQ_NE_wire,
+					  EXE_MEM_RegWrite_wire,
+					  EXE_MEM_MemtoReg_wire,
+					  EXE_MEM_MemWrite_wire,
+					  EXE_MEM_MemRead_wire,
+					  EXE_MEM_SL2_PC_4_wire[31:0],
+					  EXE_MEM_ALURes_wire[31:0],
+					  EXE_MEM_ReadData2_wire[31:0],
+					  EXE_MEM_WriteRegister_wire[4:0]})
+);
+/////////////////////////
+//Registro MEM/WriteBack
+/////////////////////////
+PipeLine_Register
+#(
+	.N(71) //64'b + 5'b + 2'b
+)
+MEM_WB_PipeRegister
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1),
+	//Input
+	.Pipe_Input({EXE_MEM_MemtoReg_wire,
+					 EXE_MEM_RegWrite_wire,
+					 EXE_MEM_ALURes_wire[31:0],
+					 ReadData_wire[31:0],
+					 EXE_MEM_WriteRegister_wire[4:0]}),
+	//Output
+	.Pipe_Output({MEM_WB_RegWrite_wire,
+					  MEM_WB_MemtoReg_wire,
+					  MEM_WB_ReadData_wire[31:0],
+					  MEM_WB_ALURes_wire[31:0],
+					  MEM_WB_WriteRegister_wire[4:0]})
+);
 
 ProgramMemory
 #(
