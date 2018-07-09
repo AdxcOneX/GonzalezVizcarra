@@ -25,7 +25,7 @@ module PC_Register
 	output reg [N-1:0] PCValue
 );
 
-always@(negedge reset or posedge clk) begin
+always@(negedge reset or negedge clk) begin
 	if(reset==0)
 		PCValue <= 'h400000; //empezaremos en la memoria de la ROM 400000
 	else	

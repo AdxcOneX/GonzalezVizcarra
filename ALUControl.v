@@ -16,7 +16,8 @@ module ALUControl
 (
 	input [2:0] ALUOp,
 	input [5:0] ALUFunction,
-	output [3:0] ALUOperation
+	output [3:0] ALUOperation,
+	output JumpR_wire
 
 );
 //se agregan todas las operacion que nuestro procesador sera capaz de ejecutar
@@ -72,7 +73,7 @@ always@(Selector)begin
 	endcase
 end
 
-
+assign JumpR_wire = (ALUOperation_wire == 4'b1110) ? 1'b1 : 1'b0;
 assign ALUOperation = ALUControlValues;
 
 endmodule

@@ -19,19 +19,17 @@ module PipeLine_Register
 (
 	input clk,
 	input reset,
-	input enable,
-	input  [N-1:0] Pipe_Input,
+	input  [N-1:0] NewPC,
 	
 	
-	output reg [N-1:0] Pipe_Output
+	output reg [N-1:0] PCValue
 );
 
-always@(negedge reset or negedge  clk) begin
+always@(negedge reset or posedge clk) begin
 	if(reset==0)
-		Pipe_Output <= 0;
+		PCValue <= 'h400000; //empezaremos en la memoria de la ROM 400000
 	else	
-		if(enable == 1)
-			Pipe_Output<=Pipe_Input;
+		PCValue<=NewPC;
 end
 
 endmodule
