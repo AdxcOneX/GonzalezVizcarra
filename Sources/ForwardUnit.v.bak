@@ -20,6 +20,28 @@ module ForwardUnit
 		output reg [1:0] ForwardB  // salidas de control
 				
 );
+/*
+always@( EXMEMRd or IDEXRt or MEMWBRd or IDEXRs or EXMEM_RW or MEMWB_RW )
+	begin
+	 if (EXMEM_RW && (EXMEMRd != 0) && (EXMEMRd == IDEXRs)) 
+	 begin 
+		ForwardB= 10;
+	  end
+	 if (EXMEM_RW && (EXMEMRd != 0) && (EXMEMRd == IDEXRt)) 
+	 begin 
+		ForwardA = 10;
+	  end
+	 if (MEMWB_RW && (MEMWBRd != 0) && (EXMEMRd != IDEXRs) && (MEMWBRd == IDEXRs)) 
+	 begin 
+		ForwardB = 01;
+	  end
+	 if (MEMWB_RW && (MEMWBRd != 0) && (EXMEMRd != IDEXRt) && (MEMWBRd == IDEXRt)) 
+	 begin 
+		ForwardB = 01;
+	  end
+	
+	end
+*/
 
 always@( EXMEMRd or IDEXRt or MEMWBRd or IDEXRs or EXMEM_RW or MEMWB_RW )
 	begin
