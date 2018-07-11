@@ -29,7 +29,7 @@ module EX_MEM
 	input [4:0]Mux,
 	output reg [4:0]Mux_Out
 );
-always@(negedge reset or posedge clk) begin
+always@(negedge reset or negedge clk) begin
 	if(reset==0)
 		begin
 		Branch_Out <= 0;

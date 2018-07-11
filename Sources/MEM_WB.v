@@ -18,7 +18,7 @@ module MEM_WB
 	output reg [4:0]WriteRegister_Out
 );
 
-always@(negedge reset or posedge clk) begin
+always@(negedge reset or negedge clk) begin
 	if(reset==0)
 	begin
 			MemtoReg_Out <= 0;

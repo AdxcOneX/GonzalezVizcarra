@@ -12,7 +12,7 @@ module IF_ID
 	output reg [31:0] PC_Out
 );
 
-always@(negedge reset or posedge clk) begin
+always@(negedge reset or negedge clk) begin
 	if(reset==0)
 	begin
 		Instruction_Out <= 0;

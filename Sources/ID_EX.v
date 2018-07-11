@@ -53,7 +53,7 @@ module ID_EX
 	output reg [31:0]PC_Out
 );
 
-always@(negedge reset or posedge clk) begin
+always@(negedge reset or negedge clk) begin
 	if(reset==0)
 		begin
 			//Control
