@@ -14,60 +14,74 @@
 module Control
 (
 	input [5:0]OP,
-	//agregamos los outputs faltantes para poder ejecutar las señales correspondientes del comportamiento de la
-	//instruccion
+	
 	output RegDst,
-	output BranchEQ_NE,
-	output Jump,
+	//output BranchEQ,
+	//output BranchNE,
+	output Branch,
 	output MemRead,
 	output MemtoReg,
 	output MemWrite,
 	output ALUSrc,
 	output RegWrite,
-	output [2:0]ALUOp
+	output Jump,
+	output Jal,
+	output [5:0]ALUOp
 );
-//se agregan las instrucciones que agregaremos del MIPS
 localparam R_Type = 0;
-localparam I_Type_ADDI = 6'h8;
-localparam I_Type_ORI = 6'h0d;
-localparam I_Type_BEQ = 6'h4;
-localparam I_Type_BNE = 6'h5;
-localparam I_Type_LUI = 6'h0f;
-localparam I_Type_SW = 6'h2b;
-localparam I_Type_LW = 6'h23;
-localparam J_Type_J = 6'h2;
-localparam J_Type_JAL = 6'h3;
+localparam I_Type_ADDI 	 = 6'h8;
+localparam I_Type_ORI 	 = 6'hd;
+localparam I_Type_LUI  	 = 6'hf; //o
 
-reg [10:0] ControlValues;
+localparam I_Type_ANDI   = 6'b00_1100; //
+localparam I_Type_LW	  	 = 6'b10_0011; //
+localparam I_Type_SW	  	 = 6'b10_1011; //
+localparam I_Type_BEQ	 = 6'b00_0100; //
+localparam I_Type_BNE	 = 6'b00_0101; //
 
-//les asignamos un valor correspondiente a las señales que deben estar encendidas para su ejecucion
+localparam J_Type_J	  = 6'h2; //o
+localparam J_Type_JAL  = 6'h3; //o
+
+
+reg [15:0] ControlValues;
+
 always@(OP) begin
 	casex(OP)
-		R_Type:       ControlValues= 11'b1_001_00_00_111;
-		I_Type_ADDI:  ControlValues= 11'b0_101_00_00_100;
-		I_Type_ORI:   ControlValues= 11'b0_101_00_00_101;
-		I_Type_LUI:   ControlValues= 11'b0_101_00_00_011;
-		I_Type_BEQ:	  ControlValues= 11'b0_000_00_01_001;
-		I_Type_BNE:	  ControlValues= 11'b0_000_00_01_010;
-		I_Type_SW: 	  ControlValues= 11'b0_100_01_00_110;
-		I_Type_LW:    ControlValues= 11'b0_111_10_00_000;
-		J_Type_J:     ControlValues= 11'b0_000_00_10_000;
-		J_Type_JAL:   ControlValues= 11'b0_001_00_10_000;
+		R_Type:       ControlValues = 16'b001_001_00_00_000000; //h
+		I_Type_ADDI:  ControlValues = 16'b000_101_00_00_001000; //h
+		I_Type_ORI:   ControlValues = 16'b000_101_00_00_001101; //h
+		I_Type_LUI:   ControlValues = 16'b000_101_00_00_001111; //h
+		
+		//TODO
+		I_Type_ANDI:  ControlValues = 16'b000_101_00_00_001100; // Validate
+		
+		I_Type_LW:    ControlValues = 16'b000_111_10_00_100011; //h
+		I_Type_SW:    ControlValues = 16'b000_100_01_00_101011; //h  6b-
+		//I_Type_BEQ:   ControlValues = 16'b000_000_00_01_000100; //h
+		//I_Type_BNE:   ControlValues = 16'b000_000_00_10_000101; //h
+		I_Type_BEQ:   ControlValues = 16'b000_000_00_10_000100; //h
+		I_Type_BNE:   ControlValues = 16'b000_000_00_10_000101; //h
+		
+		J_Type_J:     ControlValues = 16'b010_000_00_00_000010; //h
+		J_Type_JAL:   ControlValues = 16'b110_001_00_00_000011; //h
 		
 		default:
-			ControlValues= 10'b0000000000;
+			ControlValues = 16'b000000000000000;
 		endcase
 end	
 	
-assign RegDst = ControlValues[10];
-assign ALUSrc = ControlValues[9];
-assign MemtoReg = ControlValues[8];
-assign RegWrite = ControlValues[7];
-assign MemRead = ControlValues[6];
-assign MemWrite = ControlValues[5];
-assign Jump = ControlValues[4];
-assign BranchEQ_NE = ControlValues[3];
-assign ALUOp = ControlValues[2:0];	
+assign Jal			= ControlValues[15];
+assign Jump			= ControlValues[14];	
+assign RegDst 		= ControlValues[13];
+assign ALUSrc 		= ControlValues[12];
+assign MemtoReg	= ControlValues[11];
+assign RegWrite	= ControlValues[10];
+assign MemRead 	= ControlValues[9];
+assign MemWrite 	= ControlValues[8];
+assign Branch	= ControlValues[7];
+//assign BranchNE	= ControlValues[7];
+//assign BranchEQ 	= ControlValues[6]; // Branch
+assign ALUOp 		= ControlValues[5:0];	
 
 endmodule
 

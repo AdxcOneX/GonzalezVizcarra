@@ -1,0 +1,38 @@
+module IF_ID
+(
+	input clk,
+<<<<<<< HEAD
+	//input [31:0]Instruction_F,
+	//input [31:0]PC_4_F,
+	
+	//output reg [31:0]Instruction_D,
+	//output reg [31:0]PC_4_D
+=======
+	input [31:0] Instruction_In,
+	input [31:0] PC_4_In,
+	input [31:0] PC,
+	
+	output reg [31:0] Instruction_Out,
+	output reg [31:0] PC_4_Out,
+	output reg [31:0] PC_Out
+>>>>>>> alondra
+);
+
+
+
+	always@(negedge clk)
+	begin
+		
+<<<<<<< HEAD
+		//Instruction_D = Instruction_F;
+		//PC_4_D = PC_4_F;		
+
+=======
+		Instruction_Out = Instruction_In;
+		PC_4_Out = PC_4_In;		
+		PC_Out = PC;
+>>>>>>> alondra
+
+	end
+
+endmodule

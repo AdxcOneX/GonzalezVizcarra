@@ -24,14 +24,22 @@ module ProgramMemory
 );
 wire [(DATA_WIDTH-1):0] RealAddress;
 
+<<<<<<< HEAD
 assign RealAddress = {2'b0,Address[(DATA_WIDTH-1):2]};
+=======
+assign RealAddress = {2'b0,Address[(DATA_WIDTH-1):2]} - 32'h0010_0000;
+>>>>>>> alondra
 
 	// Declare the ROM variable
 	reg [DATA_WIDTH-1:0] rom[MEMORY_DEPTH-1:0];
 
 	initial
 	begin
+<<<<<<< HEAD
 		$readmemh("C:/MIPSProjects/MIPSProcessor_ver1/Sources/text.dat", rom);
+=======
+		$readmemh("C:/Users/anton/OneDrive/Documentos/ITESO/Arqui/MIPSProcessor/src/program.dat", rom);
+>>>>>>> alondra
 	end
 
 	always @ (RealAddress)

@@ -1,32 +1,29 @@
-	
+
 	.text
-	# Initializations
-	addi $t0,$zero,2
-	addi $t1,$zero,3
-	addi $t2,$zero,7
-	addi $t3,$zero,1
-	addi $s7, $s7, 0
-	 
-	# Moving values
-	add $s0,$t0,$zero
-	add $s1,$t1,$zero
-	add $s0,$t2,$zero
-	add $s4,$t3,$zero
-	
-	# Basic operations
-	add $t3,$t0,$t1
-	or  $t4,$t1,$t2
-	and $t4,$t1,$t2
-	addi $t5,$t4,1
-	
-	# 2's complement of register $t0
-	nor $at,$t0,$t0
-	addi $t0,$at,1
-	
-	# Move register $t0 to $t6
-	add $t6,$zero,$t0
-	
-	# Swap registers $t1 and $t2
-	addi $t0,$zero,5
-	addi  $t8,$zero, 10
-	
+	# Test
+	#lui  $1, 152
+	#ori  $sp, $1, 48532
+	addi $t0, $0, 5		 #t0 = 5
+	add  $s0, $0, $t0  #s0 = 5
+	jal  GO
+	#beq  $s0, $t0, GO  #Jump to GO
+	addi $t0, $0, 2		 #t0 = 2
+	sub  $s0, $s0, $t0 #s0 = 3
+	andi $t0, $t0, 3	 #t0 = 2
+	ori  $t0, $t0, 1	 #t0 = 3
+	or	 $t1, $s0, $t0 #t1 = 3
+	and  $t2, $t1, $t0 #t2 = 3
+	nor  $t2, $t2, $t1 #t2 = 0
+	addi $t1, $t1, 1	 #t1 = 4
+	sll  $t1, $t1, 1   #t1 = 8
+	srl  $t1, $t1, 1   #t1 = 4
+	j EXIT
+	j NEXT
+	GO:
+	addi $t1, $0, 16	 #t1 = 16
+	NEXT:
+	addi $t1, $0, 12   #t1 = 12
+	sw   $t1, 4($sp)
+	lw   $t2, 4($sp)
+	jr   $ra
+	EXIT:

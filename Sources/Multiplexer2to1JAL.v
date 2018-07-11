@@ -10,9 +10,9 @@
 *	01/03/2014
 ******************************************************************/
 
-module Multiplexer2to1
+module Multiplexer2to1JAL
 #(
-	parameter NBits=32
+	parameter NBits=5
 )
 (
 	input Selector,

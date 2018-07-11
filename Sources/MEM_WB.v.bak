@@ -1,0 +1,41 @@
+module MEM_WB
+(
+<<<<<<< HEAD
+
+=======
+	input clk,
+	//Control
+	input MemtoReg,
+	input RegWrite,
+	output reg MemtoReg_Out,
+	output reg RegWrite_Out,
+	//RAM
+	input [31:0]ReadData,
+	output reg [31:0]ReadData_Out,
+	//EX_MEM
+	input [31:0]ALUResult,
+	input [31:0]WriteRegister,
+	output reg [31:0]ALUResult_Out,
+	output reg [31:0]WriteRegister_Out
+>>>>>>> alondra
+);
+
+always@(negedge clk)
+	begin
+<<<<<<< HEAD
+	
+	end
+	
+always@(negedge clk)
+	begin
+	
+=======
+		MemtoReg_Out = MemtoReg;
+		RegWrite_Out = RegWrite;
+		ReadData_Out = ReadData;
+		ALUResult_Out = ALUResult;
+		WriteRegister_Out = WriteRegister;
+>>>>>>> alondra
+	end
+	
+endmodule

@@ -23,15 +23,15 @@ module ProgramMemory
 	output reg [(DATA_WIDTH-1):0] Instruction
 );
 wire [(DATA_WIDTH-1):0] RealAddress;
-//movemos nuestros bits para que coincidan con nuestras verdaderas localidades de memoria
-assign RealAddress = {2'b0,Address[(DATA_WIDTH-24):2]};
+
+assign RealAddress = {2'b0,Address[(DATA_WIDTH-1):2]} - 32'h0010_0000;
 
 	// Declare the ROM variable
 	reg [DATA_WIDTH-1:0] rom[MEMORY_DEPTH-1:0];
 
 	initial
 	begin
-		$readmemh("text.dat", rom);
+		$readmemh("C:/MIPS_Processor/MIPS_Processor_Ver2/Sources/program.dat", rom);
 	end
 
 	always @ (RealAddress)
